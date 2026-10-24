@@ -1,12 +1,15 @@
 const board = document.querySelector(".board")
 const botButton = document.querySelector(".bot-btn")
 
-
 const blockWidth = 25;
 const blockHeight = 25;
 
 const columns = Math.floor(board.clientWidth / blockWidth)
 const rows = Math.floor(board.clientHeight / blockHeight)
+
+const biteAudio = new Audio("./audio/bite.mp3")
+const overAudio = new Audio("./audio/over.mp3")
+const popAudio = new Audio("./audio/pop.mp3")
 
 const blocks = []
 let snake = [
@@ -60,12 +63,14 @@ function render() {
     }
 
     if (head.x < 0 || head.x >= rows || head.y < 0 || head.y >= columns) {
+        overAudio.play()
         document.querySelector(".modal").style.display = "flex"
         return clearInterval(intervalId)
     }
 
     if (food.x === head.x && food.y === head.y) {
         blocks[`${food.x}-${food.y}`].classList.remove("food")
+        popAudio.play()
         food = spawnFood()
         score += 10
         updateScore()
