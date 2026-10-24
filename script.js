@@ -1,5 +1,6 @@
 const board = document.querySelector(".board")
 const botButton = document.querySelector(".bot-btn")
+const controlBtns = document.querySelectorAll(".control-btn")
 
 const blockWidth = 25;
 const blockHeight = 25;
@@ -37,7 +38,7 @@ for (let row = 0; row < rows; row++) {
 }
 
 function render() {
-    if(isBotActive) {
+    if (isBotActive) {
         bot()
     }
 
@@ -153,7 +154,7 @@ function resetGame() {
         { x: 1, y: 4 },
         { x: 1, y: 5 }
     ]
-    direction = "left";
+    direction = "right";
     score = 0;
     startTime = Date.now();
 
@@ -194,4 +195,15 @@ botButton.addEventListener("click", () => {
         isBotActive = true
         botButton.innerHTML = "Disable bot"
     }
+})
+
+controlBtns.forEach((btn) => {
+    console.log(btn)
+    btn.addEventListener("click", (e) => {
+        const newDir = e.target.id
+        if (newDir === "left" && direction !== "right") direction = "left";
+        if (newDir === "right" && direction !== "left") direction = "right";
+        if (newDir === "up" && direction !== "down") direction = "up";
+        if (newDir === "down" && direction !== "up") direction = "down";
+    })
 })
