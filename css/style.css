@@ -102,3 +102,13 @@ body {
     font-size: 24px;
     font-weight: bold;
 }
+
+.bot-btn {
+    padding: 12px 20px;
+    border-radius: 10px;
+    background-color: #18181b; /* Dark card surface */
+    border: 1px solid #27272a;  /* Subtle, soft border line */
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+}

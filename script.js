@@ -1,4 +1,6 @@
 const board = document.querySelector(".board")
+const botButton = document.querySelector(".bot-btn")
+
 
 const blockWidth = 25;
 const blockHeight = 25;
@@ -14,6 +16,7 @@ let snake = [
 ]
 
 
+let isBotActive = false
 let direction = "left";
 let food = spawnFood()
 let score = 0
@@ -31,7 +34,10 @@ for (let row = 0; row < rows; row++) {
 }
 
 function render() {
-    bot() 
+    if(isBotActive) {
+        bot()
+    }
+    
     snake.forEach((segment) => {
         blocks[`${segment.x}-${segment.y}`].classList.remove("snake")
     })
@@ -72,9 +78,7 @@ function render() {
 
     snake.unshift(head)
 
-    snake.forEach((segment) => {
-        blocks[`${segment.x}-${segment.y}`].classList.add("snake")
-    })
+    drawSnake()
 
     let elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
     time = elapsedSeconds
@@ -108,6 +112,12 @@ document.querySelector(".restart-btn").addEventListener("click", () => {
     document.querySelector(".modal").style.display = "none"
     resetGame()
 })
+
+function drawSnake() {
+    snake.forEach((segment) => {
+        blocks[`${segment.x}-${segment.y}`].classList.add("snake")
+    })
+}
 
 function updateScore() {
     document.querySelector(".score").innerHTML = score
@@ -169,3 +179,14 @@ function bot() {
         direction = "left"
     }
 }
+
+botButton.addEventListener("click", () => {
+    if (isBotActive) {
+        isBotActive = false
+        botButton.innerHTML = "Enable bot"
+    }
+    else if (!isBotActive) {
+        isBotActive = true
+        botButton.innerHTML = "Disable bot"
+    }
+})
