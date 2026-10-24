@@ -1,22 +1,25 @@
 const board = document.querySelector(".board")
 
-const blockWidth = 50;
-const blockHeight = 50;
+const blockWidth = 25;
+const blockHeight = 25;
 
 const columns = Math.floor(board.clientWidth / blockWidth)
 const rows = Math.floor(board.clientHeight / blockHeight)
 
-let food = { x: Math.floor(Math.random() * rows), y: Math.floor(Math.random() * columns) }
-let score = 0
-
 const blocks = []
-const snake = [
+let snake = [
     { x: 1, y: 3 },
     { x: 1, y: 4 },
-    { x: 1, y: 5 }]
+    { x: 1, y: 5 }
+]
 
 
 let direction = "left";
+let food = spawnFood()
+let score = 0
+let time;
+let startTime = Date.now()
+// let endingTime;
 
 for (let row = 0; row < rows; row++) {
     for (let col = 0; col < columns; col++) {
@@ -28,15 +31,14 @@ for (let row = 0; row < rows; row++) {
 }
 
 function render() {
-    console.log(snake)
+    bot() 
+    snake.forEach((segment) => {
+        blocks[`${segment.x}-${segment.y}`].classList.remove("snake")
+    })
+
     blocks[`${food.x}-${food.y}`].classList.add("food")
 
     let head;
-
-    snake.forEach((segment) => {
-        blocks[`${segment.x}-${segment.y}`].classList.add("snake")
-    })
-
 
     if (direction == "left") {
         head = { x: snake[0].x, y: snake[0].y - 1 }
@@ -52,48 +54,118 @@ function render() {
     }
 
     if (head.x < 0 || head.x >= rows || head.y < 0 || head.y >= columns) {
-        window.alert("Game Over!")
+        document.querySelector(".modal").style.display = "flex"
         return clearInterval(intervalId)
     }
 
     if (food.x === head.x && food.y === head.y) {
         blocks[`${food.x}-${food.y}`].classList.remove("food")
-        snake.push({ x: snake[snake.length - 1].x, y: snake[snake.length - 1].y })
-        food = { x: Math.floor(Math.random() * rows), y: Math.floor(Math.random() * columns) }
+        food = spawnFood()
         score += 10
+        updateScore()
     }
-    
-    snake.forEach((segment) => {
-        blocks[`${segment.x}-${segment.y}`].classList.remove("snake")
-    })
-    
-    snake.pop()
+    else {
+        snake.pop()
+        console.log("selse block")
+
+    }
+
     snake.unshift(head)
-    
+
     snake.forEach((segment) => {
         blocks[`${segment.x}-${segment.y}`].classList.add("snake")
     })
+
+    let elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+    time = elapsedSeconds
+    updateTime()
 }
 
-const intervalId = setInterval(() => {
+let intervalId = setInterval(() => {
     render()
-}, 500)
+}, 350)
 
 document.addEventListener("keydown", (e) => {
     if (e.key == "ArrowLeft") {
-        if(direction == "right") return
+        if (direction == "right") return
         direction = "left"
     }
     else if (e.key == "ArrowRight") {
-        if(direction == "left") return
+        if (direction == "left") return
         direction = "right"
     }
     else if (e.key == "ArrowUp") {
-        if(direction == "down") return
+        if (direction == "down") return
         direction = "up"
     }
     else if (e.key == "ArrowDown") {
-        if(direction == "up") return
+        if (direction == "up") return
         direction = "down"
     }
 })
+
+document.querySelector(".restart-btn").addEventListener("click", () => {
+    document.querySelector(".modal").style.display = "none"
+    resetGame()
+})
+
+function updateScore() {
+    document.querySelector(".score").innerHTML = score
+}
+
+function updateTime() {
+    document.querySelector(".time").innerHTML = time
+}
+
+function spawnFood() {
+    let food = { x: Math.floor(Math.random() * rows), y: Math.floor(Math.random() * columns) }
+    const overlap = snake.some((segment) => {
+        return segment.x == food.x && segment.y == food.y
+    })
+    if (overlap) {
+        food = { x: Math.floor(Math.random() * rows), y: Math.floor(Math.random() * columns) }
+    }
+    return food
+}
+
+function resetGame() {
+    Object.values(blocks).forEach(block => {
+        block.classList.remove("snake", "food")
+    });
+
+    snake = [
+        { x: 1, y: 3 },
+        { x: 1, y: 4 },
+        { x: 1, y: 5 }
+    ]
+    direction = "left";
+    score = 0;
+    startTime = Date.now();
+
+    food = spawnFood();
+    blocks[`${food.x}-${food.y}`].classList.add("food");
+    updateScore();
+    updateTime();
+
+    if (intervalId) clearInterval(intervalId);
+    intervalId = setInterval(render, 350);
+}
+
+function bot() {
+    if (snake[0].x < food.x) {
+        if (direction == "up") return
+        direction = "down"
+    }
+    else if (snake[0].x > food.x) {
+        if (direction == "down") return
+        direction = "up"
+    }
+    else if (snake[0].y < food.y) {
+        if (direction == "left") return
+        direction = "right"
+    }
+    else if (snake[0].y > food.y) {
+        if (direction == "right") return
+        direction = "left"
+    }
+}
