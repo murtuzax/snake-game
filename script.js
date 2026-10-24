@@ -10,14 +10,14 @@ const rows = Math.floor(board.clientHeight / blockHeight)
 
 const blocks = []
 let snake = [
-    { x: 1, y: 3 },
+    { x: 1, y: 5 },
     { x: 1, y: 4 },
-    { x: 1, y: 5 }
+    { x: 1, y: 3 }
 ]
 
 
 let isBotActive = false
-let direction = "left";
+let direction = "right";
 let food = spawnFood()
 let score = 0
 let time;
@@ -37,7 +37,7 @@ function render() {
     if(isBotActive) {
         bot()
     }
-    
+
     snake.forEach((segment) => {
         blocks[`${segment.x}-${segment.y}`].classList.remove("snake")
     })
