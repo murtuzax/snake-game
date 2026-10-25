@@ -93,7 +93,7 @@ function render() {
 
 let intervalId = setInterval(() => {
     render()
-}, 350)
+}, 300)
 
 document.addEventListener("keydown", (e) => {
     if (e.key == "ArrowLeft" || e.key == "a") {
@@ -164,24 +164,61 @@ function resetGame() {
     updateTime();
 
     if (intervalId) clearInterval(intervalId);
-    intervalId = setInterval(render, 350);
+    intervalId = setInterval(render, 300);
 }
 
 function bot() {
+    const topWall = 0
+    const bottomWall = rows - 1
+    const leftWall = 0
+    const rightWall = columns - 1
+
     if (snake[0].x < food.x) {
-        if (direction == "up") return
+        if (direction == "up") {
+            if (snake[0].y + 1 < columns) {
+                direction = "right"
+            }
+            else if (snake[0].y - 1 >= 0) {
+                direction = "left";
+            }
+            return
+        }
         direction = "down"
     }
     else if (snake[0].x > food.x) {
-        if (direction == "down") return
+        if (direction == "down") {
+            if (snake[0].y + 1 < columns) {
+                direction = "right"
+            }
+            else if (snake[0].y - 1 >= 0) {
+                direction = "left";
+            }
+            return
+        }
         direction = "up"
     }
     else if (snake[0].y < food.y) {
-        if (direction == "left") return
+        if (direction == "left") {
+            if (snake[0].x + 1 < rows) {
+                direction = "down"
+            }
+            else if (snake[0].x - 1 >= 0) {
+                direction = "up";
+            }
+            return
+        }
         direction = "right"
     }
     else if (snake[0].y > food.y) {
-        if (direction == "right") return
+        if (direction == "right") {
+            if (snake[0].x + 1 < rows) {
+                direction = "down"
+            }
+            else if (snake[0].x - 1 >= 0) {
+                direction = "up";
+            }
+            return
+        }
         direction = "left"
     }
 }
