@@ -96,19 +96,19 @@ let intervalId = setInterval(() => {
 }, 350)
 
 document.addEventListener("keydown", (e) => {
-    if (e.key == "ArrowLeft") {
+    if (e.key == "ArrowLeft" || e.key == "a") {
         if (direction == "right") return
         direction = "left"
     }
-    else if (e.key == "ArrowRight") {
+    else if (e.key == "ArrowRight" || e.key == "d") {
         if (direction == "left") return
         direction = "right"
     }
-    else if (e.key == "ArrowUp") {
+    else if (e.key == "ArrowUp" || e.key == "w") {
         if (direction == "down") return
         direction = "up"
     }
-    else if (e.key == "ArrowDown") {
+    else if (e.key == "ArrowDown" || e.key == "s") {
         if (direction == "up") return
         direction = "down"
     }
